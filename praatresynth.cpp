@@ -1,11 +1,3 @@
-//
-//  main_praatpitch.cpp
-//  praatsynth
-//
-//  Created by srubin on 8/8/14.
-//  Copyright (c) 2014 srubin. All rights reserved.
-//
-
 #include <iostream>
 #include <stdlib.h>
 #include <string>
@@ -23,16 +15,11 @@
 #include "Manipulation.h"
 #include "NUMmachar.h"
 #include "AmplitudeTier.h"
-#include <stdio.h>
 
 // command line parsing
 #include <tclap/CmdLine.h>
 
 using namespace std;
-
-#define SAMPLERATE 44100
-#define SAMPLERATE_f 44100.0
-#define SEMITONE_MULTIPLIER 1.05946
 
 vector<pair<double, double>> pointPairsFromCSVFilename(string path)
 {
@@ -45,7 +32,6 @@ vector<pair<double, double>> pointPairsFromCSVFilename(string path)
     {
         double time = stod(str.substr(0, str.find(delim)));
         double value = stod(str.substr(str.find(delim) + 1));
-        cout << time << ' ' << value << endl;
         newPoints.push_back(make_pair(time, value));
     }
     theFile.close();
@@ -57,7 +43,6 @@ void replaceTierWithPoints(RealTier tier, vector <pair<double, double>> points)
     Collection_removeAllItems(tier->points);
     for (pair<double, double> p : points)
     {
-        cout << p.first << " " << p.second << endl;
         RealTier_addPoint(tier, p.first, p.second);
     }
 }
@@ -97,13 +82,13 @@ int main(int argc, const char *argv[])
         TCLAP::ValueArg<string> outAudioArg("o", "output-audio", "Output audio filename", true, "", "path");
         TCLAP::ValueArg<string> pitchCSVArg("p", "pitch", "Pitch CSV", false, "", "path");
         TCLAP::ValueArg<string> durationCSVArg("d", "duration", "Duration CSV", false, "", "path");
-        TCLAP::ValueArg<string> intensityCSVArg("e", "intesity", "Intensity CSV", false, "", "path");
+        TCLAP::ValueArg<string> amplitudeCSVArg("a", "amplitude", "Amplitude multiplier CSV", false, "", "path");
 
         cmd.add(audioArg);
         cmd.add(outAudioArg);
         cmd.add(pitchCSVArg);
         cmd.add(durationCSVArg);
-        cmd.add(intensityCSVArg);
+        cmd.add(amplitudeCSVArg);
 
         cmd.parse(argc, argv);
 
@@ -144,12 +129,12 @@ int main(int argc, const char *argv[])
         mbstowcs(outPath, outAudioArg.getValue().c_str(), size);
         Sound snd2 = Manipulation_to_Sound(manip, Manipulation_OVERLAPADD);
 
-        // load intensity CSV if it exists
-        string intensityCSVPath = intensityCSVArg.getValue();
-        if (intensityCSVPath != "")
+        // load amplitude CSV if it exists
+        string amplitudeCSVPath = amplitudeCSVArg.getValue();
+        if (amplitudeCSVPath != "")
         {
-            vector<pair<double, double>> newIntensityPoints = pointPairsFromCSVFilename(intensityCSVPath);
-            AmplitudeTier ampTier = amplitudeTierFromPoints(newIntensityPoints);
+            vector<pair<double, double>> newAmplitudePoints = pointPairsFromCSVFilename(amplitudeCSVPath);
+            AmplitudeTier ampTier = amplitudeTierFromPoints(newAmplitudePoints);
             Sound_AmplitudeTier_multiply_inline(snd2, ampTier);
         }
 

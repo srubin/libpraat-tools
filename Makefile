@@ -14,8 +14,6 @@ install: all
 	cp $(BUILD)/praatpitch $(PREFIX)/.
 	cp $(BUILD)/praatresynth $(PREFIX)/.
 
-.PHONY: clean
-
 clean:
 	rm -f $(BUILD)/praatpitch $(BUILD)/praatresynth
 	rm -rf $(BUILD)
@@ -30,3 +28,9 @@ $(BUILD)/praatpitch: praatpitch.cpp
 
 $(BUILD)/praatresynth: praatresynth.cpp
 	$(CC) praatresynth.cpp -o $(BUILD)/praatresynth -arch $(ARCH) -std=c++11 $(INCLUDES) $(CPPFLAGS)
+
+.PHONY: clean
+
+.PHONY: all
+
+.PHONY: install

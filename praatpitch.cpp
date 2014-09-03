@@ -1,11 +1,3 @@
-//
-//  praatpitch.cpp
-//  praatpitch
-//
-//  Created by srubin on 8/8/14.
-//  Copyright (c) 2014 srubin. All rights reserved.
-//
-
 #include <iostream>
 #include <stdlib.h>
 #include <string>
