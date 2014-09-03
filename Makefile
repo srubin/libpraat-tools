@@ -1,15 +1,32 @@
+PREFIX=/usr/local/bin
+LIBPRAAT=/Users/srubin/code/libpraat
 
-INCLUDES=-I/Users/srubin/code/libpraat -L/Users/srubin/code/libpraat -I/Users/srubin/code/libpraat/sys -I/Users/srubin/code/libpraat/NUM -I/Users/srubin/code/libpraat/stat -I/Users/srubin/code/libpraat/LPC -I/Users/srubin/code/libpraat/fon -lpraat -framework CoreFoundation -framework ApplicationServices -framework Foundation -framework AppKit -I/Users/srubin/code/libpraat/dwsys
-
+INCLUDES=-I$(LIBPRAAT) -L$(LIBPRAAT) -I$(LIBPRAAT)/sys -I$(LIBPRAAT)/NUM -I$(LIBPRAAT)/stat -I$(LIBPRAAT)/LPC -I$(LIBPRAAT)/fon  -I$(LIBPRAAT)/dwsys
+CPPFLAGS=-lpraat -framework CoreFoundation -framework ApplicationServices -framework Foundation -framework AppKit
+BUILD=build
 ARCH=x86_64
+CC=g++
 
-all: clean praatpitch praatresynth
+
+all: directories $(BUILD)/praatpitch $(BUILD)/praatresynth
+
+install: all
+	cp $(BUILD)/praatpitch $(PREFIX)/.
+	cp $(BUILD)/praatresynth $(PREFIX)/.
+
+.PHONY: clean
 
 clean:
-	rm -f praatpitch praatresynth
+	rm -f $(BUILD)/praatpitch $(BUILD)/praatresynth
+	rm -rf $(BUILD)
 
-praatpitch:
-	g++ praatpitch.cpp -o praatpitch -arch $(ARCH) -std=c++11 $(INCLUDES)
+directories: $(BUILD)
 
-praatresynth:
-	g++ praatresynth.cpp -o praatresynth -arch $(ARCH) -std=c++11 $(INCLUDES)
+$(BUILD):
+	mkdir -p $(BUILD)
+
+$(BUILD)/praatpitch: praatpitch.cpp
+	$(CC) praatpitch.cpp -o $(BUILD)/praatpitch -arch $(ARCH) -std=c++11 $(INCLUDES) $(CPPFLAGS)
+
+$(BUILD)/praatresynth: praatresynth.cpp
+	$(CC) praatresynth.cpp -o $(BUILD)/praatresynth -arch $(ARCH) -std=c++11 $(INCLUDES) $(CPPFLAGS)
