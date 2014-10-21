@@ -8,14 +8,15 @@ ARCH=x86_64
 CC=g++
 
 
-all: directories $(BUILD)/praatpitch $(BUILD)/praatresynth
+all: directories $(BUILD)/praatpitch $(BUILD)/praatresynth $(BUILD)/praatfeatures
 
 install: all
 	cp $(BUILD)/praatpitch $(PREFIX)/.
 	cp $(BUILD)/praatresynth $(PREFIX)/.
+	cp $(BUILD)/praatfeatures $(PREFIX)/.
 
 clean:
-	rm -f $(BUILD)/praatpitch $(BUILD)/praatresynth
+	rm -f $(BUILD)/praatpitch $(BUILD)/praatresynth $(BUILD)/praatfeatures
 	rm -rf $(BUILD)
 
 directories: $(BUILD)
@@ -28,6 +29,9 @@ $(BUILD)/praatpitch: praatpitch.cpp
 
 $(BUILD)/praatresynth: praatresynth.cpp
 	$(CC) praatresynth.cpp -o $(BUILD)/praatresynth -arch $(ARCH) -std=c++11 $(INCLUDES) $(CPPFLAGS)
+
+$(BUILD)/praatfeatures: praatfeatures.cpp
+	$(CC) praatfeatures.cpp -o $(BUILD)/praatfeatures -arch $(ARCH) -std=c++11 $(INCLUDES) $(CPPFLAGS)
 
 .PHONY: clean
 
